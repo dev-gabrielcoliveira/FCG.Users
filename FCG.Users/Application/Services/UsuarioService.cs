@@ -1,9 +1,10 @@
 ﻿using FCG.Users.Application.DTOs;
-using FCG.Users.Application.Interfaces;
 using FCG.Users.Application.Interfaces.Repository;
 using FCG.Users.Domain.Entities;
-using FCG.Users.Infrastructure.Repositories;
+using FGC.Contracts;
+using FGC.Contracts.Events;
 using FGC.Users.Tests.Validators;
+using MassTransit;
 
 namespace FCG.Users.Application.Services
 {
@@ -11,11 +12,17 @@ namespace FCG.Users.Application.Services
     {
         private readonly IUsuarioRepository _repository;
         private readonly UsuarioValidators _validator;
+        private readonly IPublishEndpoint _publichEndpoint;
 
-        public UsuarioService(IUsuarioRepository repository)
+        public UsuarioService(
+            IUsuarioRepository repository,
+            IPublishEndpoint publichEndpoint
+        )
         {
             _repository = repository;
+            _publichEndpoint = publichEndpoint;
             _validator = new UsuarioValidators();
+
         }
 
         public void Alterar(Usuario usuario)
@@ -44,7 +51,7 @@ namespace FCG.Users.Application.Services
 
         }
 
-        public Usuario Criar(UsuarioCriarInput input)
+        public async Task<Usuario> Criar(UsuarioCriarInput input)
         {
             if (!_validator.EmailValido(input.Email))
                 throw new Exception("Email inválido");
@@ -70,6 +77,13 @@ namespace FCG.Users.Application.Services
             };
 
             _repository.Cadastrar(usuario);
+
+            await _publichEndpoint.Publish(
+                new UserCreatedEvent(
+                    usuario.Id,
+                    usuario.Nome,
+                    usuario.Email
+                ));
 
             return usuario;
         }

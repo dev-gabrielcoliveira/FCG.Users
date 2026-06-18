@@ -87,11 +87,11 @@ namespace FCG.Users.Controllers
         /// <response code="400">Dados inválidos</response>
         [HttpPost]
         [Authorize(Policy = "Administrador")]
-        public IActionResult Post([FromBody] UsuarioCriarInput usuarioInput)
+        public async Task<IActionResult> Post([FromBody] UsuarioCriarInput usuarioInput)
         {
             try
             {
-                var usuario = _usuarioService.Criar(usuarioInput);
+                var usuario = await _usuarioService.Criar(usuarioInput);
 
                 // Usei o log com e-mail aqui para identificar qual usuário foi criado.
                 _logger.LogInformation("Usuário {Email} foi criado", usuarioInput.Email);

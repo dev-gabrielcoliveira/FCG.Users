@@ -3,6 +3,7 @@ using FCG.Users.Application.Interfaces.Services;
 using FCG.Users.Application.Services;
 using FCG.Users.Infrastructure.Persistence;
 using FCG.Users.Infrastructure.Repositories;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -91,6 +92,17 @@ builder.Services.AddScoped<UsuarioService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddMassTransit(busRegistration =>
+{
+    busRegistration.UsingRabbitMq((context, cfg) => {
+        cfg.Host("localhost", "/", hostConfigurator =>
+        {
+            hostConfigurator.Username("guest");
+            hostConfigurator.Password("guest");
+        });
+    });
+});
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

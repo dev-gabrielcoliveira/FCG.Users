@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MassTransit" Version="9.1.2" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="9.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
@@ -21,12 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\Events\" />
     <Folder Include="Infrastructure\Messaging\" />
     <Folder Include="Infrastructure\Security\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FGC.Contracts\FGC.Contracts.csproj" />
     <ProjectReference Include="..\FGC.Users.Tests\FGC.Users.Tests.csproj" />
   </ItemGroup>
 
