@@ -6,7 +6,7 @@ namespace FGC.CatalogAPI.Application.Interfaces
     {
         void Alterar(T Entidade);
         List<T> ObterTodos();
-        T ObterPorId(int id);
+        T? ObterPorId(int id);
         void Cadastrar(T entidade);
         void Deletar(int id);
     }

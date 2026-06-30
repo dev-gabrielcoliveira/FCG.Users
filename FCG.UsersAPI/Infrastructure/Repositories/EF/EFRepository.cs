@@ -2,6 +2,7 @@
 using FCG.Users.Application.Interfaces.Base;
 using FCG.Users.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace FCG.Users.Infrastructure.Repositories.EF
 {
@@ -31,9 +32,10 @@ namespace FCG.Users.Infrastructure.Repositories.EF
 
         public void Deletar(int id)
         {
-            var entity = _dbSet.Remove(ObterPorId(id));
+            var entity = ObterPorId(id);
             if (entity != null)
             {
+                _dbSet.Remove(entity);
                 _context.SaveChanges();
             }
         }

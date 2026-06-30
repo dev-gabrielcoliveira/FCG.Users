@@ -18,7 +18,7 @@ namespace FGC.CatalogAPI.Infrastructure.Repositories
             return _context.Set<Jogo>().ToList();
         }
 
-        public Jogo ObterPorId(int id)
+        public Jogo? ObterPorId(int id)
         {
             return _context.Set<Jogo>().Find(id);
         }

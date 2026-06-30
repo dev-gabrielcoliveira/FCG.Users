@@ -1,6 +1,7 @@
 ﻿using FGC.CatalogAPI.Application.DTOs;
 using FGC.Contracts.Events;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FGC.CatalogAPI.Controllers
@@ -16,7 +17,9 @@ namespace FGC.CatalogAPI.Controllers
             _publishEndpoint = publishEndpoint;
         }
 
+        
         [HttpPost]
+        [Authorize(Policy = "Usuario")]
         public async Task<IActionResult> EfetuarCompra([FromBody] CompraInput input)
         {
             // Quando for inclementado o endpoint de jogos validar se o jogo existe.
