@@ -1,0 +1,9 @@
+﻿namespace FGC.CatalogAPI.Application.DTOs
+{
+    public record CompraInput
+    (
+        int IdUsuario,
+        int IdJogo,
+        decimal Preco
+    );
+}
