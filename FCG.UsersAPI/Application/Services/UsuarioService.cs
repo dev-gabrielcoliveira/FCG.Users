@@ -43,10 +43,6 @@ namespace FCG.Users.Application.Services
             if (!_validator.TamanhoMaximo(usuario.Senha, 32))
                 throw new Exception("Senha excede o tamanho máximo");
 
-            usuario.Nome = usuario.Nome;
-            usuario.Email = usuario.Email;
-            usuario.Senha = usuario.Senha;
-
             _repository.Alterar(usuario);
 
         }

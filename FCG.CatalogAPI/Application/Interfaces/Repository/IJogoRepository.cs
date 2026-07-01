@@ -1,6 +1,6 @@
-﻿using FGC.CatalogAPI.Domain.Entities;
+﻿using FCG.CatalogAPI.Domain.Entities;
 
-namespace FGC.CatalogAPI.Application.Interfaces.Repository
+namespace FCG.CatalogAPI.Application.Interfaces.Repository
 {
     public interface IJogoRepository: IRepository<Jogo>
     {}

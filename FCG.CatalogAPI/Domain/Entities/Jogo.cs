@@ -1,6 +1,6 @@
-﻿using FGC.CatalogAPI.Application.Interfaces.Base;
+﻿using FCG.CatalogAPI.Application.Interfaces.Base;
 
-namespace FGC.CatalogAPI.Domain.Entities
+namespace FCG.CatalogAPI.Domain.Entities
 {
     public class Jogo: EntityBase
     {

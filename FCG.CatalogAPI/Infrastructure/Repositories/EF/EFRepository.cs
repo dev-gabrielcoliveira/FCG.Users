@@ -1,9 +1,9 @@
-﻿using FGC.CatalogAPI.Application.Interfaces;
-using FGC.CatalogAPI.Application.Interfaces.Base;
-using FGC.CatalogAPI.Infrastructure.Persistence;
+﻿using FCG.CatalogAPI.Application.Interfaces;
+using FCG.CatalogAPI.Application.Interfaces.Base;
+using FCG.CatalogAPI.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace FGC.CatalogAPI.Infrastructure.Repositories.EF
+namespace FCG.CatalogAPI.Infrastructure.Repositories.EF
 {
     public class EFRepository<T>: IRepository<T> where T : EntityBase
     {

@@ -1,7 +1,7 @@
-﻿using FGC.CatalogAPI.Domain.Entities;
+﻿using FCG.CatalogAPI.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace FGC.CatalogAPI.Infrastructure.Persistence
+namespace FCG.CatalogAPI.Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext
     {

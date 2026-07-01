@@ -1,6 +1,6 @@
-﻿using FGC.CatalogAPI.Application.Interfaces.Base;
+﻿using FCG.CatalogAPI.Application.Interfaces.Base;
 
-namespace FGC.CatalogAPI.Application.Interfaces
+namespace FCG.CatalogAPI.Application.Interfaces
 {
     public interface IRepository<T> where T : EntityBase
     {

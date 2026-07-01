@@ -1,11 +1,14 @@
-using FGC.CatalogAPI.Infrastructure.Persistence;
+using FCG.CatalogAPI.Application.Interfaces.Repository;
+using FCG.CatalogAPI.Application.Interfaces.Service;
+using FCG.CatalogAPI.Application.Service;
+using FCG.CatalogAPI.Infrastructure.Repositories;
+using FCG.CatalogAPI.Infrastructure.Persistence;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
-using System.Text;
 using Serilog;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,7 +92,10 @@ builder.Services.AddSwaggerGen(c =>
 
 });
 
+
 builder.Services.AddControllers();
+builder.Services.AddScoped<IJogoRepository, JogoRepository>();
+builder.Services.AddScoped<IJogoService, JogoService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

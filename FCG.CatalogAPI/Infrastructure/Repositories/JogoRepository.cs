@@ -1,11 +1,11 @@
-﻿using FGC.CatalogAPI.Domain.Entities;
-using FGC.CatalogAPI.Application.Interfaces;
-using FGC.CatalogAPI.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+﻿using FCG.CatalogAPI.Domain.Entities;
+using FCG.CatalogAPI.Application.Interfaces;
+using FCG.CatalogAPI.Infrastructure.Persistence;
+using FCG.CatalogAPI.Application.Interfaces.Repository;
 
-namespace FGC.CatalogAPI.Infrastructure.Repositories
+namespace FCG.CatalogAPI.Infrastructure.Repositories
 {
-    public class JogoRepository : IRepository<Jogo>
+    public class JogoRepository : IJogoRepository
     {
         private readonly ApplicationDbContext _context;
 

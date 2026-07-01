@@ -1,8 +1,8 @@
-﻿using FGC.CatalogAPI.Domain.Entities;
+﻿using FCG.CatalogAPI.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FGC.CatalogAPI.Configurations
+namespace FCG.CatalogAPI.Configurations
 {
     public class JogoConfiguration: IEntityTypeConfiguration<Jogo>
     {

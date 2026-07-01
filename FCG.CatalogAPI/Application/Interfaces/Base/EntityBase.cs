@@ -1,4 +1,4 @@
-﻿namespace FGC.CatalogAPI.Application.Interfaces.Base
+﻿namespace FCG.CatalogAPI.Application.Interfaces.Base
 {
     public class EntityBase
     {
