@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace FGC.Users.Tests.Validators
+namespace FCG.Users.Tests.Validators
 {
     public class UsuarioValidators
     {

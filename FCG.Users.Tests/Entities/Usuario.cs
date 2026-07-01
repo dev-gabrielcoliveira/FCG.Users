@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FGC.Users.Tests.Entities
+namespace FCG.Users.Tests.Entities
 {
     public class Usuario
     {

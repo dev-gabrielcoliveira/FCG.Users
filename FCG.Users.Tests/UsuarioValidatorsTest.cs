@@ -1,11 +1,11 @@
-﻿using FGC.Users.Tests.Validators;
+﻿using FCG.Users.Tests.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FGC.Users.Tests
+namespace FCG.Users.Tests
 {
     public class UsuarioValidatorTests
     {

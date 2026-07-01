@@ -1,4 +1,4 @@
-﻿namespace FGC.CatalogAPI.Application.DTOs
+﻿namespace FCG.CatalogAPI.Application.DTOs
 {
     public record CompraInput
     (

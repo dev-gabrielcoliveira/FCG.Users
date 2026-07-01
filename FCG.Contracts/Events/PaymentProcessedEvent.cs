@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FGC.Contracts.Events
+namespace FCG.Contracts.Events
 {
     public record PaymentProcessedEvent
     (

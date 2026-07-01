@@ -1,4 +1,4 @@
-﻿namespace FGC.Contracts.Events
+﻿namespace FCG.Contracts.Events
 {
     public record UserCreatedEvent
     (

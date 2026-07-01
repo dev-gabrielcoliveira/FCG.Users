@@ -1,10 +1,10 @@
-﻿using FGC.CatalogAPI.Application.DTOs;
-using FGC.Contracts.Events;
+﻿using FCG.CatalogAPI.Application.DTOs;
+using FCG.Contracts.Events;
 using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FGC.CatalogAPI.Controllers
+namespace FCG.CatalogAPI.Controllers
 {
     [ApiController]
     [Route("controller")]
