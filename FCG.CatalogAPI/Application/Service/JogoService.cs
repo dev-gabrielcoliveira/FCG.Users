@@ -14,9 +14,15 @@ namespace FCG.CatalogAPI.Application.Service
             _jogoRepository = jogoRepository;
         }
 
-        public void Atualizar(Jogo jogo)
+        public void Atualizar(JogoAtualizarInput input)
         {
-            ValidarDadosJogo(jogo.Nome, jogo.Descricao, jogo.Preco);
+            ValidarDadosJogo(input.Nome, input.Descricao, input.Preco);
+
+            var jogo = this.ObterPorId(input.IdJogo);
+
+            jogo.Descricao = input.Descricao;
+            jogo.Nome = input.Nome;
+            jogo.Preco = input.Preco;
 
             _jogoRepository.Alterar(jogo);
         }

@@ -1,7 +1,6 @@
 ﻿using FCG.Users.Application.DTOs;
-using FCG.Users.Application.Interfaces.Repository;
 using FCG.Users.Application.Services;
-using FCG.Users.Infrastructure.Repositories;
+using FCG.Users.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -9,175 +8,149 @@ using System.ComponentModel.DataAnnotations;
 namespace FCG.Users.Controllers
 {
     /// <summary>
-    /// Responsável por gerenciar os usuários da plataforma.
+    /// Gerenciamento dos usuários da plataforma.
     /// </summary>
     /// <remarks>
-    /// Permite criar, atualizar, remover e autenticar usuários.
+    /// Permite listar, buscar, cadastrar, atualizar e remover usuários.
     /// </remarks>
     [ApiController]
-    [Route("/[controller]")]
+    [Route("api/[controller]")]
     public class UsuarioController : ControllerBase
     {
-
-        private readonly IUsuarioRepository _usuarioRepository;
         private readonly UsuarioService _usuarioService;
         private readonly ILogger<UsuarioController> _logger;
 
-        public UsuarioController(IUsuarioRepository usuarioRepository, UsuarioService usuarioService, ILogger<UsuarioController> logger)
+        public UsuarioController(UsuarioService usuarioService, ILogger<UsuarioController> logger)
         {
-            _usuarioRepository = usuarioRepository;
             _usuarioService = usuarioService;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Busca todos usuários.
-        /// </summary>
-        /// <returns>Listagem de todos usuários ativo do sistema.</returns>
-        /// <response code="200">Lista de usuários obtida com sucesso</response>
-        /// <response code="400">Dados inválidos</response>
         [HttpGet]
         [Authorize(Policy = "Administrador")]
-        public IActionResult ObterTodos()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<IEnumerable<Usuario>> ObterTodos()
         {
             try
             {
-                return Ok(_usuarioService.ObterTodos());
+                var usuarios = _usuarioService.ObterTodos();
+                return Ok(usuarios);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao obter todos usuários");
-                return StatusCode(500, new { message = "Erro interno no servidor" });
+                _logger.LogError(ex, "Erro ao obter todos os usuários.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Erro interno no servidor." });
             }
         }
 
-        /// <summary>
-        /// Buscando usuário específico.
-        /// </summary>
-        /// <returns>Dados de um usuário específico.</returns>
-        /// <response code="200">Dados do usuário obtido com sucesso</response>
-        /// <response code="404">Usuário não encontrado</response>
-        /// <response code="500">Erro interno</response>
         [HttpGet("{id:int}")]
         [Authorize(Policy = "AdministradorOuUsuario")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult ObterPorId([FromRoute, Range(1, int.MaxValue)] int id)
         {
             try
             {
                 var usuario = _usuarioService.ObterPorId(id);
-               
                 if (usuario == null)
-                   return NotFound();
+                    return NotFound(new { mensagem = "Usuário não encontrado." });
 
                 return Ok(usuario);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao obter usuário com Id: {Id}", id);
-                return StatusCode(500, new { message = "Erro interno no servidor" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Erro interno no servidor." });
             }
         }
 
-        /// <summary>
-        /// Cria um novo usuário.
-        /// </summary>
-        /// <param name="usuarioInput">Dados do usuário a ser criado.</param>
-        /// <returns>Usuário criado.</returns>
-        /// <response code="200">Usuário criado com sucesso</response>
-        /// <response code="400">Dados inválidos</response>
         [HttpPost]
         [Authorize(Policy = "Administrador")]
-        public async Task<IActionResult> Post([FromBody] UsuarioCriarInput usuarioInput)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Criar([FromBody] UsuarioCriarInput usuarioInput)
         {
             try
             {
                 var usuario = await _usuarioService.Criar(usuarioInput);
+                _logger.LogInformation("Usuário {Email} foi criado com sucesso.", usuarioInput.Email);
 
-                // Usei o log com e-mail aqui para identificar qual usuário foi criado.
-                _logger.LogInformation("Usuário {Email} foi criado", usuarioInput.Email);
-
-                return Ok(usuario);
+                return CreatedAtAction(nameof(ObterPorId), new { id = usuario.Id }, usuario);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensagem = ex.Message });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao incluir usuário {Nome}", usuarioInput?.Nome);
-                return StatusCode(500, new { message = "Erro interno no servidor" });
+                _logger.LogError(ex, "Erro ao incluir usuário: {Nome}", usuarioInput?.Nome);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Erro interno no servidor." });
             }
         }
 
-        /// <summary>
-        /// Atualiza os dados de um usuário existente.
-        /// </summary>
-        /// <param name="usuarioInput">Novos dados do usuário.</param>
-        /// <returns>Usuário atualizado.</returns>
-        /// <response code="200">Usuário atualizado com sucesso</response>
-        /// <response code="400">Dados inválidos</response>
-        /// <response code="404">Usuário não encontrado</response>
         [HttpPut]
         [Authorize(Policy = "Administrador")]
-        public ActionResult Update([FromBody] UsuarioAtualizarInput usuarioInput)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult Atualizar(int id, [FromBody] UsuarioAtualizarInput usuarioInput)
         {
+            if (id != usuarioInput.IdUsuario) // Impede que o usuário errado seja alterado
+                return BadRequest(new { mensagem = "O ID da URL não corresponde ao ID do corpo da requisição." });
+
             try
             {
-                var usuario = _usuarioService.ObterPorId(usuarioInput.Id);
-
+                var usuario = _usuarioService.ObterPorId(usuarioInput.IdUsuario);
                 if (usuario == null)
-                    return NotFound("Usuário não encontrado");
+                    return NotFound(new { mensagem = "Usuário não encontrado." });
 
-                try
-                {
-                    usuario.Nome = usuarioInput.Nome;
-                    usuario.Email = usuarioInput.Email;
-                    usuario.Senha = usuarioInput.Senha;
+                // Mapeia os dados do input para a entidade
+                usuario.Nome = usuarioInput.Nome;
+                usuario.Email = usuarioInput.Email;
+                usuario.Senha = usuarioInput.Senha;
 
-                    _usuarioService.Alterar(usuario);
-                    _logger.LogInformation("Usuário {Id} foi alterado", usuario.Id);
+                _usuarioService.Alterar(usuario);
+                _logger.LogInformation("Usuário {Id} foi alterado com sucesso.", usuarioInput.IdUsuario);
 
-                    return Ok(usuario);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Erro ao alterar usuário com Id: {Id}", usuario?.Id);
-                    return StatusCode(500, new { message = "Erro interno no servidor" });
-                }
-
+                return NoContent();
             }
-            catch (Exception e)
+            catch (ArgumentException ex)
             {
-                return BadRequest(e);
+                return BadRequest(new { mensagem = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao alterar usuário com Id: {Id}", usuarioInput.IdUsuario);
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Erro interno no servidor." });
             }
         }
 
-
-        /// <summary>
-        /// Remove um usuário do sistema.
-        /// </summary>
-        /// <param name="id">Identificador do usuário.</param>
-        /// <returns>Confirmação da remoção.</returns>
-        /// <response code="204">Usuário removido com sucesso</response>
-        /// <response code="400">Dados inválidos</response>
-        /// <response code="404">Usuário não encontrado</response>
-        [HttpPatch("{id:int}")]
+        [HttpDelete("{id:int}")]
         [Authorize(Policy = "Administrador")]
-        public IActionResult Delete([FromRoute, Range(1, int.MaxValue)] int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult Remover([FromRoute, Range(1, int.MaxValue)] int id)
         {
             try
             {
                 var usuario = _usuarioService.ObterPorId(id);
-
                 if (usuario == null)
-                    return NotFound("Usuário não encontrado");
+                    return NotFound(new { mensagem = "Usuário não encontrado." });
 
                 _usuarioService.Excluir(id);
-
-                _logger.LogInformation("Usuário {Id} foi removido", id);
+                _logger.LogInformation("Usuário {Id} foi removido.", id);
 
                 return NoContent();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao excluir usuário com Id: {Id}", id);
-                return StatusCode(500, new { message = "Erro interno no servidor" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Erro interno no servidor." });
             }
         }
     }

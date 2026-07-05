@@ -2,7 +2,7 @@
 {
     public class UsuarioAtualizarInput
     {
-        public int Id { get; set; }
+        public int IdUsuario { get; set; }
 
         public required string Nome { get; set; }
 

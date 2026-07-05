@@ -8,7 +8,7 @@ namespace FCG.CatalogAPI.Application.Interfaces.Service
         IEnumerable<Jogo> ObterTodos(); 
         Jogo? ObterPorId(int id);       
         Jogo Criar(JogoCriarInput input);
-        void Atualizar(Jogo jogo);
+        void Atualizar(JogoAtualizarInput input);
         void Excluir(int id);
     }
 }

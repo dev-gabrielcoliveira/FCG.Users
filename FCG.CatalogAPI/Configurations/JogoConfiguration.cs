@@ -20,7 +20,7 @@ namespace FCG.CatalogAPI.Configurations
                 .UseIdentityColumn(1, 1);
 
             builder.Property(p => p.Nome).HasColumnType("VARCHAR(50)").IsRequired();
-            builder.Property(p => p.Descricao).HasColumnType("VARCHAR(100)").IsRequired();
+            builder.Property(p => p.Descricao).HasColumnType("VARCHAR(MAX)").IsRequired();
             builder.Property(p => p.Preco).HasColumnType("DECIMAL(18,2)").IsRequired();
             builder.Property(p => p.Situacao).HasColumnType("VARCHAR(10)").IsRequired();
         }

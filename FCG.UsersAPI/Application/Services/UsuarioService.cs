@@ -121,13 +121,10 @@ namespace FCG.Users.Application.Services
             return usuario;
         }
 
-        public List<Usuario> ObterTodos()
+        public IEnumerable<Usuario> ObterTodos()
         {
-            var listausuario = _repository.ObterTodos()
-                .Where(ent => ent.Situacao == "Ativo")
-                .ToList();
-
-            return listausuario;
+            return _repository.ObterTodos()
+                .Where(ent => ent.Situacao == "Ativo");
         }
 
     }
