@@ -15,7 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/app-.log", rollingInterval: RollingInterval.Day)
     .CreateLogger();
 
 builder.Host.UseSerilog();
@@ -103,23 +102,38 @@ builder.Services.AddMassTransit(busRegistration =>
 {
     busRegistration.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host("localhost", "/", hostConfigurator =>
+
+        // Tenta ler do appsettings/Kubernetes. Se não achar, usa o fallback seguro
+        var rabbitHost = builder.Configuration["RabbitMq:Host"] ?? "rabbitmq-service";
+
+        cfg.Host(rabbitHost, "/", hostConfigurator =>
         {
             hostConfigurator.Username("guest");
             hostConfigurator.Password("guest");
         });
 
         cfg.ConfigureEndpoints(context);
+
     });
 });
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Erro ao rodar migrations: {ex.Message}");
+    }
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
